@@ -2692,6 +2692,17 @@ export const createAntigravityPlugin = (providerId: string) => async (
                     await saveAccounts(existingStorage);
                   }
                   console.log("");
+                  await new Promise<void>(resolve => {
+                    const { stdin, stdout } = process;
+                    stdout.write("  Press Enter to return to the menu...");
+                    const onData = () => {
+                      stdout.write("\n");
+                      resolve();
+                    };
+                    stdin.resume();
+                    stdin.once("data", onData);
+                    stdin.once("error", onData);
+                  });
                   continue;
                 }
 
