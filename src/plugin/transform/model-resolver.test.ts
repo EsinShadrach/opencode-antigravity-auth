@@ -173,6 +173,33 @@ describe("resolveModelWithTier", () => {
   });
 });
 
+describe("Gemini 3.5 Flash (tier suffix routing)", () => {
+  it("antigravity-gemini-3.5-flash (no tier) appends -low like Pro", () => {
+    const result = resolveModelWithTier("antigravity-gemini-3.5-flash");
+    expect(result.actualModel).toBe("gemini-3.5-flash-low");
+    expect(result.thinkingLevel).toBe("low");
+    expect(result.quotaPreference).toBe("antigravity");
+  });
+
+  it("antigravity-gemini-3.5-flash-low keeps tier suffix", () => {
+    const result = resolveModelWithTier("antigravity-gemini-3.5-flash-low");
+    expect(result.actualModel).toBe("gemini-3.5-flash-low");
+    expect(result.thinkingLevel).toBe("low");
+  });
+
+  it("antigravity-gemini-3.5-flash-medium keeps tier suffix", () => {
+    const result = resolveModelWithTier("antigravity-gemini-3.5-flash-medium");
+    expect(result.actualModel).toBe("gemini-3.5-flash-medium");
+    expect(result.thinkingLevel).toBe("medium");
+  });
+
+  it("antigravity-gemini-3.5-flash-high keeps tier suffix", () => {
+    const result = resolveModelWithTier("antigravity-gemini-3.5-flash-high");
+    expect(result.actualModel).toBe("gemini-3.5-flash-high");
+    expect(result.thinkingLevel).toBe("high");
+  });
+});
+
 describe("resolveModelWithVariant", () => {
   describe("without variant config", () => {
     it("falls back to tier resolution for Claude thinking models", () => {

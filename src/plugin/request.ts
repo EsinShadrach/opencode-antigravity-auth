@@ -74,6 +74,25 @@ import type { GoogleSearchConfig } from "./transform/types";
 
 const log = createLogger("request");
 
+/**
+ * Resolves backend model name for Gemini 3.5 Flash based on thinking level.
+ * High thinking → gemini-3-flash-agent (specialized backend for high-thinking 3.5 Flash).
+ * Low/medium → keep model as-is (already has correct tier suffix from model-resolver).
+ */
+function resolveAntigravityGemini35BackendModel(
+  model: string,
+  thinkingLevel?: string,
+): string {
+  const lower = model.toLowerCase()
+  if (!lower.startsWith("gemini-3.5-flash")) {
+    return model
+  }
+  if (thinkingLevel === "high") {
+    return "gemini-3-flash-agent"
+  }
+  return model
+}
+
 const PLUGIN_SESSION_ID = `-${crypto.randomUUID()}`;
 
 const sessionDisplayedThinkingHashes = new Set<string>();
@@ -808,6 +827,7 @@ export function prepareAntigravityRequest(
 
   const resolved = resolveModelForHeaderStyle(rawModel, headerStyle);
   let effectiveModel = resolved.actualModel;
+  effectiveModel = resolveAntigravityGemini35BackendModel(effectiveModel, resolved.thinkingLevel);
 
   const streaming = rawAction === STREAM_ACTION;
   const defaultEndpoint = headerStyle === "gemini-cli" ? GEMINI_CLI_ENDPOINT : ANTIGRAVITY_ENDPOINT;

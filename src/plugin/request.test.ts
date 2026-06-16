@@ -1131,6 +1131,56 @@ it("removes x-api-key header", () => {
         );
         expect(result.effectiveModel).toBe("gemini-2.5-flash");
       });
+
+      describe("Gemini 3.5 Flash routing", () => {
+        it("antigravity-gemini-3.5-flash resolves to gemini-3.5-flash-low", () => {
+          const result = prepareAntigravityRequest(
+            "https://generativelanguage.googleapis.com/v1beta/models/antigravity-gemini-3.5-flash:generateContent",
+            { method: "POST", body: JSON.stringify({ contents: [] }) },
+            mockAccessToken,
+            mockProjectId,
+            undefined,
+            "antigravity"
+          );
+          expect(result.effectiveModel).toBe("gemini-3.5-flash-low");
+        });
+
+        it("antigravity-gemini-3.5-flash-low keeps tier suffix", () => {
+          const result = prepareAntigravityRequest(
+            "https://generativelanguage.googleapis.com/v1beta/models/antigravity-gemini-3.5-flash-low:generateContent",
+            { method: "POST", body: JSON.stringify({ contents: [] }) },
+            mockAccessToken,
+            mockProjectId,
+            undefined,
+            "antigravity"
+          );
+          expect(result.effectiveModel).toBe("gemini-3.5-flash-low");
+        });
+
+        it("antigravity-gemini-3.5-flash-medium keeps tier suffix", () => {
+          const result = prepareAntigravityRequest(
+            "https://generativelanguage.googleapis.com/v1beta/models/antigravity-gemini-3.5-flash-medium:generateContent",
+            { method: "POST", body: JSON.stringify({ contents: [] }) },
+            mockAccessToken,
+            mockProjectId,
+            undefined,
+            "antigravity"
+          );
+          expect(result.effectiveModel).toBe("gemini-3.5-flash-medium");
+        });
+
+        it("antigravity-gemini-3.5-flash-high maps to gemini-3-flash-agent", () => {
+          const result = prepareAntigravityRequest(
+            "https://generativelanguage.googleapis.com/v1beta/models/antigravity-gemini-3.5-flash-high:generateContent",
+            { method: "POST", body: JSON.stringify({ contents: [] }) },
+            mockAccessToken,
+            mockProjectId,
+            undefined,
+            "antigravity"
+          );
+          expect(result.effectiveModel).toBe("gemini-3-flash-agent");
+        });
+      });
     });
   });
 
